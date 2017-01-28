@@ -43,10 +43,12 @@ if __name__ == "__main__":
 
     def publish_locations(client, userdata):
         while True:
-            x_loc, y_loc = locations.get_xy()
-            if x_loc is not None and y_loc is not None:
-                result, mid = client.publish("{0}/x".format(userdata[CAMERA_NAME]), payload=x_loc[0])
-                result, mid = client.publish("{0}/y".format(userdata[CAMERA_NAME]), payload=y_loc[0])
+            x_loc = locations.get_x()
+            if x_loc is not None:
+                result, mid = client.publish("{0}/x".format(userdata[CAMERA_NAME]),
+                                             payload="{0}:{1}".format(x_loc[0],
+                                                                      x_loc[1]).encode('utf-8'))
+
 
 
     # Setup MQTT client
