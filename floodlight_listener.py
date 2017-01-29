@@ -20,7 +20,7 @@ PORT = "port"
 
 def on_connect(client, userdata, flags, rc):
     info("{0} connecting to {1}:{2}".format("Success" if rc == 0 else "Failure", userdata[HOSTNAME], userdata[PORT]))
-    client.subscribe("#")
+    client.subscribe("roborio/status/floodlight")
 
 
 def on_disconnect(client, userdata, rc):
@@ -44,6 +44,10 @@ def on_message(client, userdata, msg):
 
 def run_display():
     global color, duration, duty_cycle, intensity
+    color = {"r": 127, "g": 0, "b": 0}
+    duration = 0.5
+    duty_cycle = 0.5
+    intensity = 0.5
     while True:
         for n in range(8):
             blinkt.set_pixel(n, color["r"], color["g"], color["b"], intensity)
