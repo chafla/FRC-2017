@@ -46,9 +46,7 @@ if __name__ == "__main__":
             x_loc = locations.get_x()
             if x_loc is not None:
                 result, mid = client.publish("{0}/x".format(userdata[CAMERA_NAME]),
-                                             payload="{0}:{1}".format(x_loc[0],
-                                                                      x_loc[1]).encode('utf-8'))
-
+                                             payload="{0}:{1}".format(x_loc[0], x_loc[1]).encode('utf-8'))
 
 
     # Setup MQTT client
