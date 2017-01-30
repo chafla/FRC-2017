@@ -5,9 +5,9 @@
 
 The following [athenian-robotics github repos](https://github.com/athenian-robotics) should be cloned to *~pi/git*:
 
-* [common-robotics](https://github.com/athenian-robotics/common-robotics)  - *https://github.com/athenian-robotics/common-robotics.git*
-* [object-tracking](https://github.com/athenian-robotics/object-tracking)  - *https://github.com/athenian-robotics/object-tracking.git*
-* [FRC-2017](https://github.com/athenian-robotics/FRC-2017)  - *https://github.com/athenian-robotics/FRC-2017.git*
+* [common-robotics](https://github.com/athenian-robotics/common-robotics): `git clone https://github.com/athenian-robotics/common-robotics.git`
+* [object-tracking](https://github.com/athenian-robotics/object-tracking): `git clone https://github.com/athenian-robotics/object-tracking.git`
+* [FRC-2017](https://github.com/athenian-robotics/FRC-2017): `git clone https://github.com/athenian-robotics/FRC-2017.git`
 
 ## Launching scripts
 
