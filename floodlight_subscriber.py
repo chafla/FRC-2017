@@ -4,14 +4,12 @@
 import argparse
 import json
 import logging
-from logging import info
 import time
+from logging import info
 
 import blinkt
-
 from common_constants import LOGGING_ARGS
 from common_utils import mqtt_broker_info
-from common_utils import sleep
 from mqtt_connection import MqttConnection
 
 HOSTNAME = "hostname"
@@ -81,5 +79,7 @@ if __name__ == "__main__":
         run_display()
     except KeyboardInterrupt:
         pass
+    finally:
+        mqtt_conn.disconnect()
 
     print("Exiting...")

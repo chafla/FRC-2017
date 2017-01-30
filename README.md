@@ -2,26 +2,30 @@
 
 ## Launching scripts
 
-* Shell scripts are found in *~pi/git/FRC-2017/bin*.
+* Shell scripts are found in *~pi/git/FRC-2017/bin*. All changes to these scripts
+should be pushed to github and not done as a one-off edit on the Raspi. The goal 
+is provision a Raspi with `git pull` calls and minimize the amount of configuration 
+on the Raspi. 
 
 * Shell script stdout and stderr are directed to *~pi/git/FRC-2017/logs*.
 
-* Shell scripts are launched from */etc/rc.local* during startup 
-by adding these lines above the call to `exit 0`.
-Notice the script is executed as user *pi*:
+* Shell scripts are launched from */etc/rc.local* during startup.
+The shell script calls are added just above the call to `exit 0`.
+Scripts are executed as user *pi*:
 ````bash
 su - pi -c ~pi/git/FRC-2017/bin/object-tracker.sh
 su - pi -c ~pi/git/FRC-2017/bin/gear-front-publisher.sh
+
 exit 0
 ````
 
-* Scripts running Python code using OpenCV need to first setup a *cv2* environment:
+* Shell scripts running Python code using OpenCV need to first setup a *cv2* environment:
 ```bash
 source /home/pi/.profile
 workon py2cv3
 ```
 
-* Scripts need to adjust *$PYTHONPATH* appropriately:
+* Shell scripts need to adjust *$PYTHONPATH* appropriately:
 ```bash
 export PYTHONPATH=${PYTHONPATH}:~pi/git/common-robotics:~pi/git/object-tracking
 ```
@@ -29,5 +33,5 @@ export PYTHONPATH=${PYTHONPATH}:~pi/git/common-robotics:~pi/git/object-tracking
 * The *stdout* and *stderr* are included in the log file by using `&>`. It is critical that each shell script
 be forked with a trailing `&`:
 ```bash
-~pi/git/object-tracking/object_tracker.py --bgr "174, 56, 5" --width 400 --flip &> ~pi/git/FRC-2017/logs/object-tracker.out &
+python2 ~pi/git/object-tracking/object_tracker.py --bgr "174, 56, 5" --width 400 --flip &> ~pi/git/FRC-2017/logs/object-tracker.out &
 ```

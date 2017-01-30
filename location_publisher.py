@@ -29,12 +29,12 @@ if __name__ == "__main__":
 
     # Define MQTT callbacks
     def on_connect(client, userdata, flags, rc):
-        info("Connected with result code: {0}".format(rc))
+        info("Connected to MQTT broker with result code: {0}".format(rc))
         Thread(target=publish_locations, args=(client, userdata)).start()
 
 
     def on_disconnect(client, userdata, rc):
-        info("Disconnected with result code: {0}".format(rc))
+        info("Disconnected from MQTT broker with result code: {0}".format(rc))
 
 
     def on_publish(client, userdata, mid):
@@ -60,8 +60,9 @@ if __name__ == "__main__":
     try:
         sleep()
     except KeyboardInterrupt:
-        mqtt_conn.disconnect()
+        pass
     finally:
+        mqtt_conn.disconnect()
         locations.stop()
 
     print("Exiting...")
