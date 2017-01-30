@@ -1,4 +1,4 @@
 #! /bin/bash
 
 export PYTHONPATH=${PYTHONPATH}:../common-robotics:../object-tracking
-./color_picker.py -w 600
+/home/pi/git/object-tracking/color_picker.py -w 600
