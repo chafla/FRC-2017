@@ -1,5 +1,14 @@
 # FRC-2017 Notes
 
+
+## Required repos
+
+The following [athenian-robotics github repos](https://github.com/athenian-robotics) should be cloned to *~pi/git*:
+
+* [common-robotics](https://github.com/athenian-robotics/common-robotics)  - *https://github.com/athenian-robotics/common-robotics.git*
+* [object-tracking](https://github.com/athenian-robotics/object-tracking)  - *https://github.com/athenian-robotics/object-tracking.git*
+* [FRC-2017](https://github.com/athenian-robotics/FRC-2017)  - *https://github.com/athenian-robotics/FRC-2017.git*
+
 ## Launching scripts
 
 * Shell scripts are found in *~pi/git/FRC-2017/bin*. All changes to these scripts
