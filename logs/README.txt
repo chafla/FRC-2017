@@ -1,0 +1,1 @@
+This folder has the output files of the commands executed by /etc/rc.local
