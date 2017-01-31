@@ -3,11 +3,11 @@
 
 import argparse
 import json
-import logging
 import time
 from logging import info
 
 import blinkt
+from common_cli_args import *
 from common_constants import LOGGING_ARGS
 from common_utils import mqtt_broker_info
 from mqtt_connection import MqttConnection
@@ -60,7 +60,7 @@ def run_display():
 if __name__ == "__main__":
     # Parse CLI args
     parser = argparse.ArgumentParser()
-    parser.add_argument("-m", "--mqtt", required=True, help="MQTT broker hostname")
+    mqtt(parser)
     args = vars(parser.parse_args())
 
     # Setup logging
