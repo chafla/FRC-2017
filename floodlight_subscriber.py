@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-
-import argparse
 import json
+import logging
 import time
 from logging import info
 
 import blinkt
-from common_cli_args import *
+import common_cli_args  as cli
+from common_cli_args import setup_cli_args
 from common_constants import LOGGING_ARGS
 from common_utils import mqtt_broker_info
 from mqtt_connection import MqttConnection
@@ -59,9 +59,7 @@ def run_display():
 
 if __name__ == "__main__":
     # Parse CLI args
-    parser = argparse.ArgumentParser()
-    mqtt(parser)
-    args = vars(parser.parse_args())
+    args = setup_cli_args(cli.mqtt)
 
     # Setup logging
     logging.basicConfig(**LOGGING_ARGS)
