@@ -6,12 +6,21 @@ import socket
 import time
 from threading import Thread
 import serial
-from sys import exit
+from sys import exit, stderr
 
 import paho.mqtt.client as paho
-from common_constants import LOGGING_ARGS
-from common_utils import mqtt_broker_info
-from common_utils import is_windows
+# from common_constants import LOGGING_ARGS
+# from common_utils import mqtt_broker_info
+# from common_utils import is_windows
+
+LOGGING_ARGS = {"stream": stderr,
+                "level": logging.INFO,
+                "format": "%(asctime)s %(name)-10s %(funcName)-10s():%(lineno)i: %(levelname)-6s %(message)s"}
+
+
+def mqtt_broker_info(val):
+    # Broker hostname can be either "localhost" or "localhost:999"
+    return (val[:val.index(":")], int(val[val.index(":") + 1:])) if ":" in val else (val, 1883)
 
 
 CLIENT = "client"
@@ -42,9 +51,7 @@ def publish_messages(client, userdata):
     try:
         ser = serial.Serial(port=port, baudrate=115200)
     except serial.serialutil.SerialException as e:
-        ser = None
-        print(e)
-        exit(0)
+        raise e
 
     try:
         while True:
@@ -56,6 +63,7 @@ def publish_messages(client, userdata):
                 if mm < 0:  # out of range, get fresh data so it doesn't mess with averages
                     total_sum = 0
                     total_count = 0
+                    # continue
                 elif (total_sum + total_count == 0) or abs((total_sum / total_count) - mm) < TOLERANCE_THRESH:
                     total_sum += mm
                     total_count += 1
@@ -85,7 +93,7 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--device", required=True, help="Device name (lidar_l or lidar_r")
     args = vars(parser.parse_args())
 
-    port = ("" if is_windows() else "/dev/") + args["serial"]
+    port = "/dev/" + args["serial"]
 
     # Init connection to serial port
 
