@@ -4,17 +4,15 @@ import argparse
 import logging
 import socket
 import time
-from threading import Thread
-import serial
-from sys import stderr, exit
-
 import paho.mqtt.client as paho
+
 from common_constants import LOGGING_ARGS
 from common_utils import mqtt_broker_info
 from common_utils import is_windows
+from serial_reader import SerialReader
 
-global last_fetched
-global raw_mm
+global total_sum
+global total_count
 
 
 '''
@@ -35,9 +33,8 @@ TOLERANCE_THRESH = 15
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code: {0}".format(rc))
-    # TODO: Work on syncronization tomorrow
-    Thread(target=fetch_data, args=(client, userdata)).start()
-    Thread(target=get_data_from_serial).start()
+    serial_reader = SerialReader()
+    serial_reader.start(fetch_data, userdata["port"])
 
 
 def on_disconnect(client, userdata, rc):
@@ -48,63 +45,40 @@ def on_publish(client, userdata, mid):
     print("Published value to {0} with message id {1}".format(userdata["topic"], mid))
 
 
-def get_data_from_serial():
-    global raw_mm
+def fetch_data(mm):
+    # Using globals to keep running averages in check
+    global total_count
+    global total_sum
+    global client
+    global userdata
 
+    mm = int(mm)
     try:
-        ser = serial.Serial(port=port, baudrate=115200)
-    except serial.serialutil.SerialException as e:
+
+        if mm < 0:  # out of range, get fresh data so it doesn't mess with averages
+            total_sum = 0
+            total_count = 0
+            # continue
+        elif (total_sum + total_count == 0) or abs((total_sum / total_count) - mm) < TOLERANCE_THRESH:
+            total_sum += mm
+            total_count += 1
+        else:
+            client.publish("{}/mm".format(userdata["topic"]),
+                           payload=str(mm).encode("utf-8"),
+                           qos=0)
+            total_sum = 0 + mm
+            total_count = 1
+
+    except BaseException as e:
         print(e.__class__.__name__, e)
-        ser = None  # Thanks pycharm
-        exit(0)
-
-    while True:
-        try:
-            bytes = ser.readline()
-            raw_mm = int(bytes.decode("utf-8"))
-
-        except BaseException as e:
-            print(e.__class__.__name__, e)
-            time.sleep(1)
-
-
-def fetch_data(client, userdata):
-    total_sum = 0
-    total_count = 0
-    global raw_mm
-
-    while True:
-        try:
-            if raw_mm is None:
-                continue
-
-            mm = raw_mm.copy()
-            if mm < 0:  # out of range, get fresh data so it doesn't mess with averages
-                total_sum = 0
-                total_count = 0
-                # continue
-            elif (total_sum + total_count == 0) or abs((total_sum / total_count) - mm) < TOLERANCE_THRESH:
-                total_sum += mm
-                total_count += 1
-            else:
-                mm_enc = str(mm).encode("utf-8")
-
-                client.publish("{}/mm".format(userdata["topic"]),
-                               payload=mm_enc,
-                               qos=0)
-                raw_mm = None
-
-                total_sum = 0 + mm
-                total_count = 1
-
-            # time.sleep(0.25)  # Needs to be quicker than the update time of the lidar itself
-
-        except BaseException as e:
-            print(e.__class__.__name__, e)
-            time.sleep(1)
+        time.sleep(1)
 
 
 if __name__ == "__main__":
+
+    global userdata
+    global client
+
     # Parse CLI args
     parser = argparse.ArgumentParser()
     parser.add_argument("-m", "--mqtt", required=True, help="MQTT broker hostname")
